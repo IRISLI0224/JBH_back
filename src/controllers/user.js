@@ -10,5 +10,4 @@ async function addUser(req, res) {
     return res.json({ firstName, lastName });
 }
 
-
 module.exports = { addUser };

@@ -8,7 +8,7 @@ const schema = new mongoose.Schema({
     lastName: {
         type: String,
         required: true,
-    }
+    },
 });
 
 const model = mongoose.model('User', schema);

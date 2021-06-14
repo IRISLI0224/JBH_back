@@ -25,7 +25,7 @@ exports.connectToDB = () => {
   });
   mongoose.connect(connectionString, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   });
 };
 
