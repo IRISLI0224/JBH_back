@@ -1,3 +1,4 @@
+//@ts-ignore
 const app = require('./src/app');
 const { connectToDB } = require('./src/utils/db');
 

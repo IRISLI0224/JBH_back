@@ -1,3 +1,4 @@
+//@ts-ignore
 const mongoose = require('mongoose');
 
 exports.connectToDB = () => {
@@ -5,12 +6,13 @@ exports.connectToDB = () => {
   if (process.env.NODE_ENV === 'test') {
     database += '_test';
   }
+  //@ts-ignore
   const connectionString = process.env.CONNECTION_STRING + database;
   const db = mongoose.connection;
   db.on('connected', () => {
     console.log(`DB connected with ${connectionString}`);
   });
-  db.on('error', (error) => {
+  db.on('error', (error:any) => {
     console.log('DB connection failed');
     console.log(error.message);
     // 正常关闭

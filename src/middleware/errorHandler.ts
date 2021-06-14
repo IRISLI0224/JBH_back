@@ -1,4 +1,4 @@
-module.exports = (err, req, res, next) => {
+module.exports = (err:any, req:any, res:any, next:any) => {
     if (err.name === "ValidationError") {
       return res.status(400).json(err.message);
     }
