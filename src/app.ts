@@ -1,13 +1,13 @@
 require('dotenv').config();
-//@ts-ignore
+// @ts-ignore
 const express = require('express');
 require('express-async-errors');
 const morgan = require('morgan');
 const cors = require('cors');
-//@ts-ignore
+// @ts-ignore
 const router = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
-//@ts-ignore
+// @ts-ignore
 const app = express();
 
 const morganLog =

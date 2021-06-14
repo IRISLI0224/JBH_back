@@ -1,6 +1,6 @@
 const User = require('../models/user');
 
-//@ts-ignore
+// @ts-ignore
 async function addUser(req:any, res:any) {
     const {
         firstName,

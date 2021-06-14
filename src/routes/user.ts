@@ -1,10 +1,10 @@
-//@ts-ignore
+// @ts-ignore
 const express = require('express');
 
-//@ts-ignore
+// @ts-ignore
 const { addUser } = require('../controllers/user');
 
-//@ts-ignore
+// @ts-ignore
 const router = express.Router();
 
 router.post('/', addUser);

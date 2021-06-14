@@ -1,7 +1,7 @@
-//@ts-ignore
+// @ts-ignore
 const express = require('express');
 
-//@ts-ignore
+// @ts-ignore
 const router = express.Router();
 
 module.exports = router;
