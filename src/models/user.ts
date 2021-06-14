@@ -1,6 +1,7 @@
 // @ts-ignore
 const mongoose = require('mongoose');
 
+//you can rewrite it 
 const schema = new mongoose.Schema({
     firstName: {
         type: String,
