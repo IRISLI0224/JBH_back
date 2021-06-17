@@ -6,7 +6,7 @@ from "../constants/errorMessage";
 
 const { validateToken } = require('../utils/jwt');
 
-model.exports = (req:any, res:any, next:any) => {
+module.exports = (req:any, res:any, next:any) => {
     const authHeader = req.header('Authorization');
     if (!authHeader) {
         return res.status(401).json(AUTH_ERROR_NO_AUTHHEAD);
