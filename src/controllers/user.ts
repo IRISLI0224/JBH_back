@@ -4,7 +4,7 @@ const { generateToken } = require('../utils/jwt');
 
 // you can rewrite it
 // @ts-ignore
-/*test middleware purpose
+//test middleware purpose
 async function addUser(req:any, res:any) {
     const {
         firstName,
@@ -27,4 +27,3 @@ async function addUser(req:any, res:any) {
 }
 
 module.exports = { addUser };
-*/
