@@ -1,3 +1,4 @@
+// @ts-ignore
 import { JWT_KEY } from "../constants/env";
 
 const jwt = require('jsonwebtoken');

@@ -1,8 +1,5 @@
-import {
-    AUTH_ERROR_NO_AUTHHEAD,
-    AUTH_ERROR_WRONG_AUTHHEAD_FORMAT,
-    AUTH_ERROR_NO_PRIVILEGE }
-from "../constants/errorMessage";
+// @ts-ignore
+import { AUTH_ERROR_NO_AUTHHEAD, AUTH_ERROR_WRONG_AUTHHEAD_FORMAT, AUTH_ERROR_NO_PRIVILEGE } from "../constants/errorMessage";
 
 const { validateToken } = require('../utils/jwt');
 

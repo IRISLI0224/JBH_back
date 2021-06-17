@@ -26,11 +26,11 @@ const schema = new mongoose.Schema({
     },
     password: {
         type: String,
-    }
+    },
 });
 
 schema.methods.hashPassword = async function () {
-    const genPassword:any = this.firstName+this.lastName+this.DOB;
+    const genPassword:any = this.firstName + this.lastName + this.DOB;
     this.password = await bcrypt.hash(genPassword, 10);
 };
 
