@@ -1,11 +1,10 @@
-// @ts-ignore
 import { JWT_KEY } from '../constants/env';
 
 const jwt = require('jsonwebtoken');
 
 function generateToken(id:any, userType:string) {
   const token = jwt.sign({ id, userType }, JWT_KEY, {
-    expiresIn: '1h',
+    expiresIn: '2h',
   });
   return token;
 }

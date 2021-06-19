@@ -21,10 +21,16 @@ const validatorSchema = Joi.object({
   phone: phoneValidator,
 });
 
-module.exports = async (req: { validatedBody: any; body: any; }, res: any, next: () => void) => {
-  req.validatedBody = await validatorSchema.validateAsync(req.body, {
-    allowUnknown: true,
-    abortEarly: false,
-  });
+// eslint-disable-next-line consistent-return
+module.exports = async (req: any, res: any, next: () => void) => {
+  const { firstName, userType } = req.body;
+  if (!userType) {
+    req.validatedBody = await validatorSchema.validateAsync(req.body, {
+      allowUnknown: true,
+      abortEarly: false,
+    });
+  } else if (!firstName) {
+    return res.status(400).send("You should enter admin's name.");
+  } else { req.admin = { firstName, userType }; }
   next();
 };

@@ -1,11 +1,13 @@
-// @ts-ignore
+export {};
+
 const express = require('express');
 
 const userRouter = require('./routes/user');
+const bookingRouter = require('./routes/booking');
 
-// @ts-ignore
 const router = express.Router();
 
-router.use('/users', userRouter);
+router.use('/user', userRouter);
+router.use('/booking', bookingRouter);
 
 module.exports = router;

@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 
-// @ts-ignore
 const mongoose = require('mongoose');
 
 exports.connectToDB = () => {
