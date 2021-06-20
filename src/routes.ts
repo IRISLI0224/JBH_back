@@ -7,7 +7,7 @@ const bookingRouter = require('./routes/booking');
 
 const router = express.Router();
 
-router.use('/user', userRouter);
-router.use('/booking', bookingRouter);
+router.use('/users', userRouter);
+router.use('/bookings', bookingRouter);
 
 module.exports = router;

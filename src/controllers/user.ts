@@ -1,6 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 export {};
 
+const bcrypt = require('bcrypt');
+
 const User = require('../models/user');
 const Booking = require('../models/booking');
 const { generateToken } = require('../utils/jwt');
@@ -12,10 +14,11 @@ const addUser = async (req:any, res:any) => {
     const { firstName, userType } = req.admin;
     const existingAdmin = await User.findOne({ firstName }).exec();
     if (existingAdmin) { return res.status(400).send('admin existing'); }
+    const password = await bcrypt.hash('123456', 10);
     const user = new User({
       userType,
       firstName,
-      password: 123456,
+      password,
     });
     await user.save();
     const token = generateToken(user._id, userType);
@@ -26,7 +29,7 @@ const addUser = async (req:any, res:any) => {
     firstName, lastName, gender, email, birthYear, phone, userType,
   } = req.validatedBody;
   const existingUser = await User.findOne({ phone }).exec();
-  if (existingUser) { return res.status(400).send('user existing'); }
+  if (existingUser) { return res.status(400).send('client existing'); }
   const user = new User({
     firstName,
     lastName,
