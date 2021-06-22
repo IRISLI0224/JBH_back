@@ -1,6 +1,12 @@
-// you can delete it
+const Booking = require("../models/booking");
+
 // @ts-ignore
-function sum(a:number, b:number) {
-    return a + b;
-  }
-  module.exports = sum;
+async function addBooking(req: any, res: any) {
+  const { bookingDate, bookingTime } = req.body;
+
+  const booking = new Booking({ bookingDate, bookingTime });
+  await booking.save();
+  return res.status(201).json(booking);
+}
+
+module.exports = { addBooking };
