@@ -1,12 +1,19 @@
 // @ts-ignore
 const { Schema, model } = require("mongoose");
-
+// @ts-ignore
+const Joi = require('joi');
 // @ts-ignore
 const schema = new Schema(
   {
     date: {
       type: String,
       required: true,
+      validate:{
+        validator:(date:string)=>{
+          return !Joi.date().iso().raw().validate(date).error;
+        },
+        msg:'Invalid date format'
+      }
     },
     time: {
       type: Number,

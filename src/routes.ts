@@ -9,7 +9,7 @@ const sessionRouter = require('./routes/session');
 const router = express.Router();
 
 router.use('/users', userRouter);
-router.use('./bookings', bookingRouter);
+router.use('/bookings', bookingRouter);
 router.use('/sessions', sessionRouter);
 
 module.exports = router;

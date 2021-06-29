@@ -12,6 +12,8 @@ const {
   deleteSession,
 } = require("../controllers/session");
 
+const authGuard = require("../middleware/authGuard");
+
 // @ts-ignore
 const router = express.Router();
 
