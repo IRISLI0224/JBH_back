@@ -1,20 +1,12 @@
-// @ts-ignore
-const { Schema, model } = require("mongoose");
+export {};
 
-// you can rewrite it
-// @ts-ignore
+const { Schema, model } = require('mongoose');
+
 const schema = new Schema({
-  bookingDate: {
-    type: String,
-    required: true,
-  },
-  bookingTime: {
-    type: Number,
-    required: true,
-  },
+  statusConfirm: { type: Boolean, require: true },
+  enteringTime: { type: Date, require: true },
+  numOfParticipants: { type: Number, require: true },
+  users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
-// @ts-ignore
-const model = model("Booking", schema);
-
-module.exports = model;
+module.exports = model('Booking', schema);

@@ -1,40 +1,50 @@
-// @ts-ignore
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+//@ts-ignore
+const { Schema, model } = require('mongoose');
+const bcrypt = require('bcrypt');
+//@ts-ignore
+const schema = new Schema(
+  {
+    firstName: {
+      type: String,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      trim: true,
+    },
+    gender: {
+      type: Boolean,
+    },
+    email: {
+      type: String,
+    },
+    birthYear: {
+      type: Number,
+    },
+    phone: {
+      type: String,
+    },
+    userType: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    __v: {
+      type: Number,
+      select: false,
+    },
+    bookings: [{ type: Schema.Types.ObjectId, ref: 'Booking' }],
+  },
+);
 
-// you can rewrite it
-// @ts-ignore
-const schema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    require: true,
-  },
-  DOB: {
-    type: String,
-    required: true,
-  },
-  userType: {
-    type: String,
-    default: "client",
-  },
-  password: {
-    type: String,
-  },
-});
-
+// eslint-disable-next-line func-names
 schema.methods.hashPassword = async function () {
-  const genPassword: any = this.firstName + this.lastName + this.DOB;
+  const genPassword = this.firstName + this.phone;
   this.password = await bcrypt.hash(genPassword, 10);
 };
-//@ts-ignore
-const model = mongoose.model("User", schema);
 
-module.exports = model;
+module.exports = model('User', schema);

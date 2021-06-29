@@ -1,13 +1,21 @@
-// @ts-ignore
-const express = require("express");
+export {};
 
-// @ts-ignore
-const { addBooking, deleteBooking } = require("../controllers/booking");
+const express = require('express');
 
-// @ts-ignore
 const router = express.Router();
 
-router.post("/", addBooking);
-router.delete('/:bookingDate/:bookingTime', deleteBooking);
+const {
+  addBooking,
+  getAllBookingsOrByProduct,
+  getBookingByID,
+  getBookingsByEnteringTime,
+  getBookingsByStatusConfirm,
+} = require('../controllers/booking');
+
+router.post('', addBooking);
+router.get('', getAllBookingsOrByProduct);
+router.get('/:id', getBookingByID);
+router.get('', getBookingsByEnteringTime);
+router.get('', getBookingsByStatusConfirm);
 
 module.exports = router;

@@ -1,47 +1,39 @@
-const Booking = require("../models/booking");
-// @ts-ignore
-const Session = require("../models/session");
+export {};
 
-// @ts-ignore
-async function addBooking(req: any, res: any) {
-  const { bookingDate, bookingTime } = req.body;
+const Booking = require('../models/booking');
 
-  const booking = new Booking({ bookingDate, bookingTime });
+const addBooking = async (req:any, res:any) => {
+  const { statusConfirm, enteringTime, numOfParticipants } = req.body;
+  const booking = new Booking({
+    statusConfirm,
+    enteringTime,
+    numOfParticipants,
+  });
   await booking.save();
-
-  await Session.updateMany(
-    {
-      date: bookingDate,
-      time: bookingTime,
-    },
-    {
-      $addToSet: { bookings: booking.id },
-    }
-  );
   return res.status(201).json(booking);
-}
+};
 
-// @ts-ignore
-async function deleteBooking(req, res) {
-  const { bookingDate, bookingTime } = req.params;
-  const booking = await Booking.findOne({ bookingDate, bookingTime });
-  if (!booking) {
-    return res.status(404).send("booking is not found");
-  }
+const getAllBookingsOrByProduct = async (req:any, res:any) => {
+  const bookings = await Booking.find().exec();
+  return res.json(bookings);
+};
 
-  await Session.updateMany(
-    {
-      bookings: booking.id,
-    },
-    {
-      $pull: {
-        bookings: booking.id,
-      },
-    }
-  );
+const getBookingByID = (req:any, res:any) => {
+  res.send('This is getBookingByID Api.');
+};
 
-  await Booking.findByIdAndDelete(booking.id).exec();
-  return res.status(200).send("booking has been deleted");
-}
+const getBookingsByEnteringTime = (req:any, res:any) => {
+  res.send('This is getBookingsByEnteringTime Api.');
+};
 
-module.exports = { addBooking, deleteBooking };
+const getBookingsByStatusConfirm = (req:any, res:any) => {
+  res.send('This is getBookingsByStatusConfirm Api.');
+};
+
+module.exports = {
+  addBooking,
+  getAllBookingsOrByProduct,
+  getBookingByID,
+  getBookingsByEnteringTime,
+  getBookingsByStatusConfirm,
+};
