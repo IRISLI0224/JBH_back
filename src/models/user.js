@@ -38,6 +38,7 @@ const schema = new Schema({
   bookings: [{ type: Schema.Types.ObjectId, ref: 'Booking' }],
 });
 
+// eslint-disable-next-line func-names
 schema.methods.hashPassword = async function () {
   const genPassword = this.firstName + this.phone;
   this.password = await bcrypt.hash(genPassword, 10);

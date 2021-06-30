@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "lint": "eslint --fix \"./src/**/*.{js,jsx,json}\" && eslint --fix \"./__tests__/**/*.js\" --max-warnings=0",
+    "lint": "eslint --fix \"./src/**/*.{js,jsx,json}\" && eslint --fix \"./__tests__/**/*.js\"",
     "test": "jest",
     "prepare": "husky install"
   },
