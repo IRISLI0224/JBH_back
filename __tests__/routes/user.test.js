@@ -1,6 +1,3 @@
-/* eslint-disable no-undef */
-export {};
-
 const supertest = require('supertest');
 
 const app = require('../../src/app');
@@ -9,7 +6,7 @@ const User = require('../../src/models/user');
 
 const request = supertest(app);
 
-describe('/user', () => {
+describe('/users', () => {
   beforeAll(() => {
     connectToDB();
   });
@@ -22,7 +19,7 @@ describe('/user', () => {
     await disconnectDB();
   });
 
-  const createUser = async (body:any) => request.post('/user').send(body);
+  const createUser = async (body) => request.post('/api/users').send(body);
 
   const validClientUser = {
     firstName: 'Jason',
@@ -56,16 +53,15 @@ describe('/user', () => {
   });
 
   it.each`
-    field | value
+    field          | value
     ${'firstName'} | ${undefined}
-    ${'lastName'} | ${undefined}
-    ${'gender'} | ${'male'}
-    ${'phone'} | ${'11111'}
-    ${'email'} | ${'@'}
-    ${'email'} | ${'a@b'}
+    ${'lastName'}  | ${undefined}
+    ${'gender'}    | ${'male'}
+    ${'phone'}     | ${'11111'}
+    ${'email'}     | ${'@'}
+    ${'email'}     | ${'a@b'}
   `('should return 400 when $field is $value', async ({ field, value }) => {
     const user = { ...validClientUser };
-    // @ts-ignore
     user[field] = value;
     const res = await createUser(user);
     expect(res.statusCode).toBe(400);
