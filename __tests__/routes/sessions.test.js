@@ -29,7 +29,7 @@ describe('/sessions', () => {
     { field: 'maxNumber', value: 'abc' },
   ];
 
-  //= =================== POST TEST ====================
+  //==================== POST TEST ====================
   describe('POST', () => {
     const createSession = (body) => request.post('/api/sessions').send(body);
 
@@ -64,7 +64,7 @@ describe('/sessions', () => {
     });
   });
 
-  //= =================== GET TEST ====================
+  //==================== GET TEST ====================
   describe('GET', () => {
     const requestingSession = { date: '2021-06-28', time: 0 };
 
@@ -101,7 +101,7 @@ describe('/sessions', () => {
     });
   });
 
-  //= =================== PUT TEST ====================
+  //==================== PUT TEST ====================
   describe('PUT', () => {
     const newDateAndTime = { date: '2021-06-28', time: 0 };
     const newMaxNumber = { maxNumber: 40 };
@@ -141,7 +141,7 @@ describe('/sessions', () => {
     });
   });
 
-  //= =================== DELETE TEST ====================
+  //==================== DELETE TEST ====================
   describe('DELETE', () => {
     const sessionToBeDelete = { date: '2021-06-28', time: 0 };
 

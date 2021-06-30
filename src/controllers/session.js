@@ -1,13 +1,14 @@
-const Joi = require('joi');
-const Session = require('../models/session');
+const Joi = require("joi");
+const Session = require("../models/session");
 
-//= =================== helper function ====================
+//==================== helper function ====================
 function findSession(referenceInfo) {
   return Session.findOne(referenceInfo).exec();
 }
 
+//==================== ADD SESSION ====================
 async function addSession(req, res) {
-  //= =================== validate session data ====================
+  //validate session data
   const schema = Joi.object({
     date: Joi.date().iso().raw().required(),
     time: Joi.number().required(),
@@ -20,21 +21,22 @@ async function addSession(req, res) {
     abortEarly: false,
   });
 
-  //= =================== check wether session exist ====================
+  //check wether session exist
   const existSession = await findSession({ date, time });
   if (existSession) {
-    return res.status(409).send('session existing');
+    return res.status(409).send('Session already existed');
   }
 
-  //= =================== create new session ====================
+  //create new session
   const session = new Session({ time, date, maxNumber });
   await session.save();
 
   return res.status(201).json(session);
 }
 
+//==================== GET SESSION ====================
 async function getSession(req, res) {
-  //= =================== validate session data ====================
+  //validate session data
   const schema = Joi.object({
     date: Joi.date().iso().raw().required(),
     time: Joi.number().required(),
@@ -45,17 +47,18 @@ async function getSession(req, res) {
     abortEarly: false,
   });
 
-  //= =================== check wether session exist ====================
+  //check wether session exist
   const session = await findSession({ date, time });
   if (!session) {
-    return res.status(404).send('session is not found');
+    return res.status(404).send('Session is not found');
   }
 
   return res.json(session);
 }
 
+//==================== UPDATE SESSION ====================
 async function updateSession(req, res) {
-  //= =================== validate session data ====================
+  //validate session data
   const dateAndTimeSchema = Joi.object({
     date: Joi.date().iso().raw().required(),
     time: Joi.number().required(),
@@ -74,23 +77,24 @@ async function updateSession(req, res) {
     abortEarly: false,
   });
 
-  //= =================== update session ====================
+  //update session
   const session = await Session.findOneAndUpdate(
     { date, time },
     { $set: { maxNumber } },
-    { new: true },
+    { new: true }
   );
 
-  //= =================== check wether session exist ====================
+  //check wether session exist
   if (!session) {
-    return res.status(404).send('session is not found');
+    return res.status(404).send('Session is not found');
   }
 
-  return res.send('update successful');
+  return res.send("update successful");
 }
 
+//==================== DELETE SESSION ====================
 async function deleteSession(req, res) {
-  //= =================== validate session data ====================
+  //validate session data
   const schema = Joi.object({
     date: Joi.date().iso().raw().required(),
     time: Joi.number().required(),
@@ -101,15 +105,15 @@ async function deleteSession(req, res) {
     abortEarly: false,
   });
 
-  //= =================== check wether session exist ====================
+  //check wether session exist
   const session = await findSession({ date, time });
   if (!session) {
-    return res.status(404).send('session is not found');
+    return res.status(404).send('Session is not found');
   }
 
-  //= =================== delete session ====================
+  //delete session
   await Session.findByIdAndDelete(session.id).exec();
-  return res.status(204).send('session has been deleted');
+  return res.status(204).send("session has been deleted");
 }
 
 module.exports = {
