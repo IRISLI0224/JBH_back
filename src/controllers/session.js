@@ -1,6 +1,7 @@
-const Joi = require("joi");
-const Session = require("../models/session");
+const Joi = require('joi');
+const Session = require('../models/session');
 
+//= =================== helper function ====================
 //= =================== HELPER FUNCTION ====================
 function findSession(referenceInfo) {
   return Session.findOne(referenceInfo).exec();
@@ -131,7 +132,7 @@ async function updateSession(req, res) {
   const session = await Session.findOneAndUpdate(
     { date, time },
     { $set: { maxNumber } },
-    { new: true }
+    { new: true },
   );
 
   // check whether session exist
