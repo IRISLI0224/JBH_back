@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST);
 
 const createPayment = async (req, res) => {
