@@ -20,7 +20,6 @@
     "url": "https://bitbucket.org/jinzhih/hyperlink_backend/issues"
   },
   "homepage": "https://bitbucket.org/jinzhih/hyperlink_backend#readme",
-  
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
