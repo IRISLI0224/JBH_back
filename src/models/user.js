@@ -45,8 +45,8 @@ schema.methods.hashPassword = async function () {
 };
 
 schema.methods.validatePassword = async function (firstName, phone) {
-  const validPassword = await bcrypt.compare((firstName+phone), this.password);
+  const validPassword = await bcrypt.compare((firstName + phone), this.password);
   return validPassword;
-}
+};
 
 module.exports = model('User', schema);

@@ -7,7 +7,7 @@ const authRoute = require('./routes/auth');
 
 const router = express.Router();
 
-router.use('/auth',authRoute);
+router.use('/auth', authRoute);
 router.use('/users', userRouter);
 router.use('/bookings', bookingRouter);
 router.use('/sessions', sessionRouter);
