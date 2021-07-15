@@ -1,5 +1,5 @@
-const { Schema, model } = require("mongoose");
-const Joi = require("joi");
+const { Schema, model } = require('mongoose');
+const Joi = require('joi');
 
 const schema = new Schema(
   {
@@ -8,7 +8,7 @@ const schema = new Schema(
       required: true,
       validate: {
         validator: (date) => !Joi.date().iso().raw().validate(date).error,
-        msg: "Invalid date format",
+        msg: 'Invalid date format',
       },
     },
     time: {
@@ -16,7 +16,7 @@ const schema = new Schema(
       default: 0,
     },
     maxNumber: Number,
-    bookings: [{ type: Schema.Types.ObjectId, ref: "Booking" }],
+    bookings: [{ type: Schema.Types.ObjectId, ref: 'Booking' }],
     __v: {
       type: Number,
       select: false,
@@ -28,14 +28,14 @@ const schema = new Schema(
       virtuals: true,
     },
     id: false,
-  }
+  },
 );
 
-schema.virtual("state").get(function getStateType() {
+schema.virtual('state').get(function getStateType() {
   const stateTypeTable = [
-    { threshold: 100, type: "fullyBooked" },
-    { threshold: 80, type: "limited" },
-    { threshold: 0, type: "available" },
+    { threshold: 100, type: 'fullyBooked' },
+    { threshold: 80, type: 'limited' },
+    { threshold: 0, type: 'available' },
   ];
   const percentage = (this.bookings.length / this.maxNumber) * 100;
   for (let i = 0; i < stateTypeTable.length; i += 1) {
@@ -46,4 +46,4 @@ schema.virtual("state").get(function getStateType() {
   return false;
 });
 
-module.exports = model("Session", schema);
+module.exports = model('Session', schema);
