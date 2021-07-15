@@ -30,7 +30,8 @@
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.13",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "stripe": "^8.160.0"
   },
   "devDependencies": {
     "eslint": "^7.29.0",

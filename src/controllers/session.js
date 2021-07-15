@@ -17,6 +17,11 @@ function getFormattedSession({
   };
 }
 
+function getFormattedMonth(month) {
+  const { length } = month.toString();
+  return length === 1 ? `0${month}` : month;
+}
+
 //= =================== ADD SESSION ====================
 async function addSession(req, res) {
   // validate session data
@@ -80,30 +85,30 @@ async function getSessionByMonth(req, res) {
     abortEarly: false,
   });
 
-  const sessions = await Session.find().exec();
-  const formattedSessionArr = sessions.map((session) => getFormattedSession(session));
-  const requstingSessions = formattedSessionArr.filter((session) => {
-    const sessionMonth = parseInt(session.date.split('-')[1], 10);
-    const sessionYear = parseInt(session.date.split('-')[0], 10);
-    return sessionYear === year && sessionMonth === month;
-  });
+  const formattedMonth = getFormattedMonth(month);
+
+  const reg = new RegExp(`^${year}-${formattedMonth}`);
+  const requestingSessions = await Session.find({
+    date: { $regex: reg },
+  }).exec();
+  const formattedSessionArr = requestingSessions.map((session) => getFormattedSession(session));
 
   const daysInMonth = new Date(year, month, 0).getDate();
   const stateArr = [];
   for (let i = 0; i < daysInMonth; i += 1) {
     stateArr.push('closed');
-    for (let j = 0; j < requstingSessions.length; j += 1) {
+    for (let j = 0; j < formattedSessionArr.length; j += 1) {
       const requestingDay = parseInt(
-        requstingSessions[j].date.split('-')[2],
+        formattedSessionArr[j].date.split('-')[2],
         10,
       );
       if (requestingDay === i + 1) {
-        stateArr[i] = requstingSessions[j].state;
+        stateArr[i] = formattedSessionArr[j].state;
         break;
       }
     }
   }
-  return res.json({ date: `${year}-${month}`, stateArr, daysInMonth });
+  return res.json({ date: `${year}-${formattedMonth}`, stateArr });
 }
 
 //= =================== UPDATE SESSION ====================
@@ -155,14 +160,14 @@ async function deleteSession(req, res) {
     abortEarly: false,
   });
 
-  // check whether session exist
-  const session = await findSession({ date, time });
+  // delete the session
+  const session = await Session.findOneAndDelete({ date, time });
+
+  // check whether the session exist
   if (!session) {
     return res.status(404).send('Session is not found');
   }
 
-  // delete session
-  await Session.findByIdAndDelete(session._id).exec();
   return res.sendStatus(204);
 }
 
