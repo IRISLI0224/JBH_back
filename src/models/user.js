@@ -44,8 +44,8 @@ schema.methods.hashPassword = async function () {
   this.password = await bcrypt.hash(genPassword, 10);
 };
 
-schema.methods.validatePassword = async function (firstName, phone) {
-  const validPassword = await bcrypt.compare((firstName + phone), this.password);
+schema.methods.validatePassword = async function (password) {
+  const validPassword = await bcrypt.compare(password, this.password);
   return validPassword;
 };
 
