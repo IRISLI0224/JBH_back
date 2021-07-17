@@ -11,7 +11,7 @@ const {
 } = require('../controllers/booking');
 
 router.post('/', addBooking);
-router.post('/check',checkBooking);
+router.post('/check', checkBooking);
 router.get('', getAllBookingsOrByProduct);
 router.get('', getBookingsByEnteringTime);
 router.get('', getBookingsByStatusConfirm);

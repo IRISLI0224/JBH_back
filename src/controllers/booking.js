@@ -22,7 +22,6 @@ const addBooking = async (req, res) => {
     dateOfBirth,
     paidAmount,
   });
-  
   // save to DB 并将返回值存储，如果 MongoDB 不返回ID等信息则需要从DB取ID, bookingDate, numOfGuests, firstName, lastName
   const savedRecord = await booking.save();
   // 提取出 savedRecord中 ID, bookingDate, numOfGuests, firstName, lastName 然后返回. TBA
@@ -58,17 +57,18 @@ const checkBooking = async (req, res) => {
     return res.status(406).json('Booking date have to at least from tomorrow');
   }
   // check date of birth
-  if ((parseInt(todayDate) - parseInt(dateOfBirth)) < 18) {
-    return res.status(406).json('You need to be over 18 years old in order to make this booking');
-  }
-  if ((parseInt(todayDate) - parseInt(dateOfBirth)) > 100) {
-    return res.status(406).json('Please contact us through email in order to process further for your booking');
-  }
+  // if ((parseInt(todayDate) - parseInt(dateOfBirth)) < 18) {
+  //   return res.status(406).json('You need to be over 18 years');
+  // }
+  // if ((parseInt(todayDate) - parseInt(dateOfBirth)) > 100) {
+  //   return res.status(406).json('Please contact us through email');
+  // }
   // check email address, return invalid email if failed， TBA
-  const emailValidator = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if (!emailValidator.test(emailAddress)) {
-    return res.status(406).json('Email address invalid');
-  }
+  // const emailValidator = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))
+  // @((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  // if (!emailValidator.test(emailAddress)) {
+  //   return res.status(406).json('Email address invalid');
+  // }
   // check phone number, return invalid phone number if failed， TBA
   const phoneValidator = /^0[0-8]\d{8}$/g;
   if (!phoneValidator.test(phoneNumber)) {
