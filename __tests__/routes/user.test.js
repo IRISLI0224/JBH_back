@@ -32,7 +32,8 @@ describe('/users', () => {
 
   const validAdminUser = {
     firstName: 'Admin',
-    userType: true,
+    email: 'admin@gmail.com',
+    userType: 1,
   };
 
   it('should return 201 if request sending clientUser is valid', async () => {

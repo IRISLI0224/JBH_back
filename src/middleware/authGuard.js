@@ -1,8 +1,8 @@
-import {
+const {
   AUTH_ERROR_NO_AUTHHEAD,
   AUTH_ERROR_WRONG_AUTHHEAD_FORMAT,
   AUTH_ERROR_NO_PRIVILEGE,
-} from '../constants/errorMessage';
+} = require('../constants/errorMessage');
 
 const { validateToken } = require('../utils/jwt');
 
