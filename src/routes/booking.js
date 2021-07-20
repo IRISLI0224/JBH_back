@@ -5,14 +5,14 @@ const router = express.Router();
 const {
   addBooking,
   checkBooking,
-  getAllBookingsOrByProduct,
+  editBooking,
   getBookingsByEnteringTime,
   getBookingsByStatusConfirm,
 } = require('../controllers/booking');
 
 router.post('/', addBooking);
-router.post('/check', checkBooking);
-router.get('', getAllBookingsOrByProduct);
+router.get('/check', checkBooking);
+router.put('/edit', editBooking);
 router.get('', getBookingsByEnteringTime);
 router.get('', getBookingsByStatusConfirm);
 

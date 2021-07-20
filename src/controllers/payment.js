@@ -1,6 +1,6 @@
-/* eslint-disable camelcase */
 const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST);
 
+// eslint-disable-next-line camelcase
 const createPayment = async (amount, id, receipt_email) => {
   try {
     const payment = await stripe.paymentIntents.create({

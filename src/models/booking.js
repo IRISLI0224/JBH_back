@@ -8,7 +8,8 @@ const schema = new Schema({
   emailAddress: { type: String, trim: true },
   phoneNumber: { type: String, trim: true },
   dateOfBirth: { type: Date, require: true },
-  paidAmount: { type: Number, require: true },
+  paymentAmount: { type: Number, require: true },
+  id: { type: String, require: true },
 });
 
 module.exports = model('Booking', schema);

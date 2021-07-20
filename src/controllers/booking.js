@@ -10,7 +10,8 @@ const addBooking = async (req, res) => {
     emailAddress,
     phoneNumber,
     dateOfBirth,
-    paidAmount,
+    paymentAmount,
+    id,
   } = req.body;
   // validation and put in to booking
   const booking = new Booking({
@@ -21,12 +22,36 @@ const addBooking = async (req, res) => {
     emailAddress,
     phoneNumber,
     dateOfBirth,
-    paidAmount,
+    paymentAmount,
+    id,
   });
-  // save to DB 并将返回值存储，如果 MongoDB 不返回ID等信息则需要从DB取ID, bookingDate, numOfGuests, firstName, lastName
-  const savedRecord = await booking.save();
+
+  // check all booking data
+
+  // process payment, return 406 if failed + error reason
+  const statusHolder = await createPayment(paymentAmount * 100, id, emailAddress);
+  if (!statusHolder.success) {
+    return res.status(406).json(statusHolder);
+  }
+  // if success, save to mongoDB, 并准备好返回信息
+  const {
+    _id: bookingID,
+    bookingDate: confirmedDate,
+    numOfGuest: confirmedNumOfGuest,
+    firstName: confirmedFirstName,
+    lastName: confirmedLastName,
+    emailAddress: confirmedEmailAddress,
+  } = await booking.save();
   // 提取出 savedRecord中 ID, bookingDate, numOfGuests, firstName, lastName 然后返回. TBA
-  return res.status(201).json(savedRecord);
+  return res.status(200).json({
+    ...statusHolder,
+    bookingID,
+    confirmedDate,
+    confirmedNumOfGuest,
+    confirmedFirstName,
+    confirmedLastName,
+    confirmedEmailAddress,
+  });
 };
 
 const checkBooking = async (req, res) => {
@@ -76,10 +101,10 @@ const checkBooking = async (req, res) => {
     return res.status(406).json('Phone number invalid');
   }
 
-  return res.status(201).json(checking);
+  return res.status(200).json(checking);
 };
 
-const getAllBookingsOrByProduct = async (req, res) => {
+const editBooking = async (req, res) => {
   const bookings = await Booking.find().exec();
   return res.json(bookings);
 };
@@ -95,7 +120,7 @@ const getBookingsByStatusConfirm = (req, res) => {
 module.exports = {
   addBooking,
   checkBooking,
-  getAllBookingsOrByProduct,
+  editBooking,
   getBookingsByEnteringTime,
   getBookingsByStatusConfirm,
 };
