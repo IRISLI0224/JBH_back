@@ -1,9 +1,7 @@
 /* eslint-disable camelcase */
 const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST);
 
-const createPayment = async (req, res) => {
-  const { amount, id, receipt_email } = req.body;
-
+const createPayment = async (amount, id, receipt_email) => {
   try {
     const payment = await stripe.paymentIntents.create({
       amount,
@@ -14,15 +12,15 @@ const createPayment = async (req, res) => {
       receipt_email,
     });
 
-    res.json({
+    return {
       message: 'Payment Successful',
       success: true,
-    });
+    };
   } catch (error) {
-    res.json({
+    return {
       message: 'Payment Failed',
       success: false,
-    });
+    };
   }
 };
 
