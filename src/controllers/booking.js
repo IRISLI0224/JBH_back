@@ -1,4 +1,5 @@
 const Booking = require('../models/booking');
+const { createPayment } = require('./payment');
 
 const addBooking = async (req, res) => {
   const {
