@@ -1,6 +1,8 @@
 const express = require('express');
 
-const validator = require('../middleware/validator');
+const userValidator = require('../middleware/userValidator');
+const authGuard = require('../middleware/authGuard');
+const adminGuard = require('../middleware/adminGuard');
 const checkUserOrBookingExist = require('../middleware/checkUserOrBookingExist');
 
 const router = express.Router();
@@ -15,11 +17,11 @@ const {
   removeBookingFromUser,
 } = require('../controllers/user');
 
-router.post('', validator, addUser);
-router.get('', getAllUsersOrByPhone);
-router.get('/:id', getUserById);
-router.put('/:id', validator, updateUserById);
-router.delete('/:id', deleteUserById);
+router.post('', userValidator, addUser);
+router.get('', authGuard, adminGuard, getAllUsersOrByPhone);
+router.get('/:id', authGuard, adminGuard, getUserById);
+router.put('/:id', userValidator, updateUserById);
+router.delete('/:id', authGuard, adminGuard, deleteUserById);
 router.post(
   '/:userId/bookings/:bookingId',
   checkUserOrBookingExist,
