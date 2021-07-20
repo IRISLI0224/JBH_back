@@ -20,8 +20,10 @@ const addUser = async (req, res) => {
       password,
     });
     await user.save();
-    const token = generateToken(user._id, userType);
-    return res.status(201).json({ firstName, token });
+    // 这里不需要生成和返回token，只需要返回登录名+密码告知前端即可(并且不需要返回这个hash后的password，只需要告知密码是123456)
+    // 增加通过邮箱告知的功能
+    // const token = generateToken(user._id, userType);
+    return res.status(201).send(`请记住您的登录名是${firstName}，登录密码是123456`);
   }
   // 添加的是client user
   const {
@@ -42,8 +44,9 @@ const addUser = async (req, res) => {
   });
   await user.hashPassword();
   await user.save();
-  const token = generateToken(user._id, user.userType);
-  return res.status(201).json({ email, token });
+  // 这里不需要生成和返回token，只需要返回登录名+密码告知前端即可(并且不需要返回这个hash后的password，只需要告知密码是名字+电话)
+  // const token = generateToken(user._id, user.userType);
+  return res.status(201).send(`请记住您的登录名是${email}，登录密码是名+电话号码`);
 };
 
 // 提供接口：从query中根据唯一电话号码查询client user，如果没有query，表示查询所有users
