@@ -12,7 +12,7 @@ const phoneValidator = Joi.string()
   .pattern(new RegExp('^[0-9]{8,10}$'))
   .required();
 
-const validatorSchema = Joi.object({
+const clientValidatorSchema = Joi.object({
   firstName: stringValidator,
   lastName: stringValidator,
   gender: Joi.required(),
@@ -21,17 +21,28 @@ const validatorSchema = Joi.object({
   phone: phoneValidator,
 });
 
+const adminValidatorSchema = Joi.object({
+  firstName: stringValidator,
+  email: mailValidator,
+  // admin必须传userType值且必须为1，加gender：null是为了防止client用户验证时加了userType为1的字段混进来
+  // 这样client就必须不加userType字段从而使用数据库默认的2
+  gender: null,
+  userType: 1,
+});
+
 module.exports = async (req, res, next) => {
-  const { firstName, userType } = req.body;
+  const { userType } = req.body;
+  // add client user时不传userType值，model里会使用默认值2
   if (!userType) {
-    req.validatedBody = await validatorSchema.validateAsync(req.body, {
+    req.validatedClient = await clientValidatorSchema.validateAsync(req.body, {
       allowUnknown: true,
       abortEarly: false,
     });
-  } else if (!firstName) {
-    return res.status(400).send("You should enter admin's name.");
   } else {
-    req.admin = { firstName, userType };
+    req.validatedAdmin = await adminValidatorSchema.validateAsync(req.body, {
+      allowUnknown: true,
+      abortEarly: false,
+    });
   }
   return next();
 };

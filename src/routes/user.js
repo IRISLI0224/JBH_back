@@ -9,18 +9,23 @@ const router = express.Router();
 
 const {
   addUser,
-  getAllUsersOrByPhone,
+  getAllUsers,
+  getUserByPhone,
   getUserById,
   updateUserById,
+  updateUserByPhone,
   deleteUserById,
   addBookingFromUser,
   removeBookingFromUser,
 } = require('../controllers/user');
 
 router.post('', userValidator, addUser);
-router.get('', authGuard, adminGuard, getAllUsersOrByPhone);
-router.get('/:id', authGuard, adminGuard, getUserById);
-router.put('/:id', userValidator, updateUserById);
+// 查询全部users用/all路径，跟普通查询区分开；下面/id路径是为了跟使用phone查询区分开
+router.get('/all', authGuard, adminGuard, getAllUsers);
+router.get('/:phone', authGuard, getUserByPhone);
+router.get('/id/:id', authGuard, getUserById);
+router.put('/id/:id', userValidator, authGuard, updateUserById);
+router.put('/:phone', userValidator, authGuard, updateUserByPhone);
 router.delete('/:id', authGuard, adminGuard, deleteUserById);
 router.post(
   '/:userId/bookings/:bookingId',

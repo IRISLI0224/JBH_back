@@ -24,13 +24,11 @@ const schema = new Schema({
     type: String,
   },
   userType: {
-    type: Boolean,
-    required: true,
-    default: false,
+    type: Number,
+    default: 2,
   },
   password: {
     type: String,
-    required: true,
   },
   __v: {
     type: Number,
@@ -40,11 +38,13 @@ const schema = new Schema({
 });
 
 schema.methods.hashPassword = async function () {
+  // 自动生成密码只给client user用，admin user使用123456
   const genPassword = this.firstName + this.phone;
   this.password = await bcrypt.hash(genPassword, 10);
 };
 
 schema.methods.validatePassword = async function (password) {
+  // 如果admin使用默认密码123456，解密时加toString()
   const validPassword = await bcrypt.compare(password, this.password);
   return validPassword;
 };
