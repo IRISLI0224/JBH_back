@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "lint": "eslint --fix \"./src/**/*.{js,jsx,json}\" && eslint --fix \"./__tests__/**/*.js\"",
-    "test": "jest",
+    "test": "jest --testTimeout 10000",
     "prepare": "husky install"
   },
   "repository": {
