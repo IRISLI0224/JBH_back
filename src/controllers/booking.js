@@ -1,5 +1,6 @@
 const Booking = require('../models/booking');
 const { createPayment } = require('./payment');
+const { genBookingNum } = require('../utils/gen');
 
 const addBooking = async (req, res) => {
   const {
@@ -13,6 +14,7 @@ const addBooking = async (req, res) => {
     paymentAmount,
     id,
   } = req.body;
+  const bookingNum = genBookingNum();
   // validation and put in to booking
   const booking = new Booking({
     bookingDate,
@@ -22,6 +24,7 @@ const addBooking = async (req, res) => {
     emailAddress,
     phoneNumber,
     dateOfBirth,
+    bookingNum,
     paymentAmount,
     id,
   });
@@ -51,6 +54,7 @@ const addBooking = async (req, res) => {
     confirmedFirstName,
     confirmedLastName,
     confirmedEmailAddress,
+    bookingNum,
   });
 };
 
@@ -63,6 +67,7 @@ const checkBooking = async (req, res) => {
     emailAddress,
     phoneNumber,
     dateOfBirth,
+    bookingNum,
     paidAmount,
   } = req.body;
   // validation and put in to booking
@@ -74,6 +79,7 @@ const checkBooking = async (req, res) => {
     emailAddress,
     phoneNumber,
     dateOfBirth,
+    bookingNum,
     paidAmount,
   });
 

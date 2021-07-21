@@ -8,6 +8,7 @@ const schema = new Schema({
   emailAddress: { type: String, trim: true },
   phoneNumber: { type: String, trim: true },
   dateOfBirth: { type: Date, require: true },
+  bookingNum: { type: String },
   paidAmount: { type: Number, require: true },
   users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
