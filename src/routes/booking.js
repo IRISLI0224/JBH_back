@@ -12,7 +12,7 @@ const {
 
 router.post('/', addBooking);
 router.get('/check', checkBooking);
-router.put('/edit', editBooking);
+router.put('/:id', editBooking);
 router.get('', getBookingsByEnteringTime);
 router.get('', getBookingsByStatusConfirm);
 

@@ -29,10 +29,10 @@ const addBooking = async (req, res) => {
   // check all booking data
 
   // process payment, return 406 if failed + error reason
-  const statusHolder = await createPayment(paymentAmount * 100, id, emailAddress);
-  if (!statusHolder.success) {
-    return res.status(406).json(statusHolder);
-  }
+  // const statusHolder = await createPayment(paymentAmount * 100, id, emailAddress);
+  // if (!statusHolder.success) {
+  //   return res.status(406).json(statusHolder);
+  // }
   // if success, save to mongoDB, 并准备好返回信息
   const {
     _id: bookingID,
@@ -44,7 +44,7 @@ const addBooking = async (req, res) => {
   } = await booking.save();
   // 提取出 savedRecord中 ID, bookingDate, numOfGuests, firstName, lastName 然后返回. TBA
   return res.status(200).json({
-    ...statusHolder,
+    //    ...statusHolder,
     bookingID,
     confirmedDate,
     confirmedNumOfGuest,
@@ -104,17 +104,33 @@ const checkBooking = async (req, res) => {
   return res.status(200).json(checking);
 };
 
-const editBooking = async (req, res) => {
-  const bookings = await Booking.find().exec();
-  return res.json(bookings);
-};
-
 const getBookingsByEnteringTime = (req, res) => {
   res.send('This is getBookingsByEnteringTime Api.');
 };
 
 const getBookingsByStatusConfirm = (req, res) => {
   res.send('This is getBookingsByStatusConfirm Api.');
+};
+
+const editBooking = async (req, res) => {
+  const { id } = req.params;
+  const { bookingDate, numOfGuests } = req.body;
+  const newBooking = await Booking.findByIdAndUpdate(
+    id,
+    {
+      bookingDate,
+      numOfGuests,
+    },
+    {
+      new: true,
+    },
+  ).exec();
+
+  if (!newBooking) {
+    return res.status(404).json('booking not found');
+  }
+
+  return res.json(newBooking);
 };
 
 module.exports = {
