@@ -1,0 +1,64 @@
+/*****************************************************************
+    // Project3 backend
+    ******************************************************************/
+    pipeline {
+
+        environment {
+            registry = "garrydevops/test"
+            registryCredential = 'dockerhub'
+            dockerImage = ''
+        }
+
+        agent any
+        stages {
+                // stage('Cloning  BitBucket') {
+                //     steps {
+                //     git 'git@github.com:naistangz/Docker_Jenkins_Pipeline.git'
+                //     }
+                // }
+
+                stage('Building Docker Image'){
+                    steps {
+                        sh 'pwd'
+                        sh 'ls'
+                        script {
+                            dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                        }
+                    }
+                }
+
+                stage('Deploying Docker Image to Dockerhub'){
+                    steps {
+                        script {
+                            docker.withRegistry('', registryCredential) {
+                            dockerImage.push()
+                            }
+                        }
+                    }
+                }
+
+                stage('Cleaning Up'){
+                    steps{
+                    sh "docker rmi --force $registry:$BUILD_NUMBER"
+                    }
+                }
+
+                stage('ssh ec2'){
+                    steps{
+                        sshagent(credentials: ['sshec2']) {
+                    sh '''
+                        
+                        ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker ps
+                        ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker rm -f myweb
+                        
+                        ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker pull garrydevops/test:"$BUILD_NUMBER"
+                        ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker run --name myweb -p 3000:3000 -d --restart=always garrydevops/test:$BUILD_NUMBER
+                        
+                        
+                       '''
+                        }
+
+                    }
+                } 
+    }
+}
