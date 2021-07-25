@@ -1,148 +1,106 @@
 const Booking = require('../models/booking');
-const { createPayment } = require('./payment');
+const Session = require('../models/session');
 const { genBookingNum } = require('../utils/gen');
 
+// 添加booking并生成用户密码
 const addBooking = async (req, res) => {
   const {
-    bookingDate,
-    numOfGuests,
     firstName,
     lastName,
-    emailAddress,
-    phoneNumber,
+    gender,
+    email,
+    phone,
+    bookingDate,
+    numOfGuests,
     dateOfBirth,
-    paymentAmount,
-    id,
-  } = req.body;
+    paidAmount,
+  } = req.validatedBooking;
   const bookingNum = genBookingNum();
-  // validation and put in to booking
   const booking = new Booking({
-    bookingDate,
-    numOfGuests,
     firstName,
     lastName,
-    emailAddress,
-    phoneNumber,
-    dateOfBirth,
-    bookingNum,
-    paymentAmount,
-    id,
-  });
-
-  // check all booking data
-
-  // process payment, return 406 if failed + error reason
-  // const statusHolder = await createPayment(paymentAmount * 100, id, emailAddress);
-  // if (!statusHolder.success) {
-  //   return res.status(406).json(statusHolder);
-  // }
-  // if success, save to mongoDB, 并准备好返回信息
-  const {
-    _id: bookingID,
-    bookingDate: confirmedDate,
-    numOfGuest: confirmedNumOfGuest,
-    firstName: confirmedFirstName,
-    lastName: confirmedLastName,
-    emailAddress: confirmedEmailAddress,
-  } = await booking.save();
-  // 提取出 savedRecord中 ID, bookingDate, numOfGuests, firstName, lastName 然后返回. TBA
-  return res.status(200).json({
-    //    ...statusHolder,
-    bookingID,
-    confirmedDate,
-    confirmedNumOfGuest,
-    confirmedFirstName,
-    confirmedLastName,
-    confirmedEmailAddress,
-    bookingNum,
-  });
-};
-
-const checkBooking = async (req, res) => {
-  const {
+    gender,
+    email,
+    phone,
     bookingDate,
     numOfGuests,
-    firstName,
-    lastName,
-    emailAddress,
-    phoneNumber,
     dateOfBirth,
-    bookingNum,
     paidAmount,
-  } = req.body;
-  // validation and put in to booking
-  const checking = new Booking({
-    bookingDate,
-    numOfGuests,
-    firstName,
-    lastName,
-    emailAddress,
-    phoneNumber,
-    dateOfBirth,
     bookingNum,
-    paidAmount,
   });
-
-  // check bookingDate, return invalid if before the current time
-  const todayDate = new Date().toISOString().slice(0, 10);
-  if (todayDate > bookingDate) {
-    return res.status(406).json('Booking date have to at least from tomorrow');
+  await booking.hashPassword();
+  const session = await Session.findOne({ date: bookingDate }).exec();
+  if (session) {
+    booking.sessions.addToSet(session.date);
+    session.bookings.addToSet(booking.numOfGuests);
+    await session.save();
   }
-  // check date of birth
-  // if ((parseInt(todayDate) - parseInt(dateOfBirth)) < 18) {
-  //   return res.status(406).json('You need to be over 18 years');
-  // }
-  // if ((parseInt(todayDate) - parseInt(dateOfBirth)) > 100) {
-  //   return res.status(406).json('Please contact us through email');
-  // }
-  // check email address, return invalid email if failed， TBA
-  // const emailValidator = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))
-  // @((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  // if (!emailValidator.test(emailAddress)) {
-  //   return res.status(406).json('Email address invalid');
-  // }
-  // check phone number, return invalid phone number if failed， TBA
-  const phoneValidator = /^0[0-8]\d{8}$/g;
-  if (!phoneValidator.test(phoneNumber)) {
-    return res.status(406).json('Phone number invalid');
+  await booking.save();
+  return res.status(201).json(booking);
+};
+
+// 查询全部bookings（仅admin登录后有权限）
+const getAllBookings = async (req, res) => {
+  const bookings = await Booking.find().exec();
+  return res.json(bookings);
+};
+
+// 根据phone、email、bookingNum、bookingDate、_id查询bookings数组，
+// 电话、邮箱、bookingDate查询的数组可多个元素值（client和admin登录后均有权限）
+const getBookingsByArgs = (args) => async (req, res) => {
+  const bookings = await Booking.find({ [args]: req.params[args] }).exec();
+  if (bookings.length === 0) {
+    return res.status(404).send(`No such a ${args}.`);
   }
-
-  return res.status(200).json(checking);
+  return res.json(bookings);
 };
+const getBookingsByPhone = getBookingsByArgs('phone');
+const getBookingsByEmail = getBookingsByArgs('email');
+const getBookingByBookingNum = getBookingsByArgs('bookingNum');
+const getBookingsByBookingDate = getBookingsByArgs('bookingDate');
+const getBookingById = getBookingsByArgs('_id');
 
-const getBookingsByEnteringTime = (req, res) => {
-  res.send('This is getBookingsByEnteringTime Api.');
-};
-
-const getBookingsByStatusConfirm = (req, res) => {
-  res.send('This is getBookingsByStatusConfirm Api.');
-};
-
-const editBooking = async (req, res) => {
-  const { id } = req.params;
-  const { bookingDate, numOfGuests } = req.body;
-  const newBooking = await Booking.findByIdAndUpdate(
-    id,
-    {
-      bookingDate,
-      numOfGuests,
-    },
-    {
-      new: true,
-    },
+// 根据bookingNum或者_id更新booking（client和admin登录后均有权限）
+// 改参加人数后session人数变动的逻辑还没写
+const updateBookingByArgs = (args) => async (req, res) => {
+  const newBookingInfo = req.validatedBooking;
+  const newBooking = await Booking.findOneAndUpdate(
+    { [args]: req.params[args] },
+    { ...newBookingInfo },
+    { new: true },
   ).exec();
+  if (!newBooking) return res.send(`找不到这个${args}的booking信息`);
+  await newBooking.hashPassword();
+  await newBooking.save();
+  return res.status(201).json(newBooking);
+};
+const updateBookingByBookingNum = updateBookingByArgs('bookingNum');
+const updateBookingById = updateBookingByArgs('_id');
 
-  if (!newBooking) {
-    return res.status(404).json('booking not found');
+// 根据_id删除booking（仅admin登录后有权限）
+const deleteBookingById = async (req, res) => {
+  const booking = await Booking.findByIdAndDelete(req.params._id).exec();
+  if (!booking) {
+    return res.status(404).json('booking not found in this id');
   }
+  // 删除booking时删除关联到session的booking人数
+  const date = booking.bookingDate.toISOString().split('T')[0];
+  const session = await Session.findOne({ date }).exec();
+  session.bookings.pull(booking.numOfGuests);
+  await session.save();
 
-  return res.json(newBooking);
+  return res.status(200).send('delete successful');
 };
 
 module.exports = {
   addBooking,
-  checkBooking,
-  editBooking,
-  getBookingsByEnteringTime,
-  getBookingsByStatusConfirm,
+  getAllBookings,
+  getBookingsByPhone,
+  getBookingsByEmail,
+  getBookingByBookingNum,
+  getBookingsByBookingDate,
+  getBookingById,
+  updateBookingByBookingNum,
+  updateBookingById,
+  deleteBookingById,
 };
