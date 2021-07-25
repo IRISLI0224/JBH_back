@@ -16,7 +16,8 @@ const schema = new Schema(
       default: 0,
     },
     maxNumber: Number,
-    bookings: [{ type: Schema.Types.ObjectId, ref: 'Booking' }],
+    // 需要存的不是booking数据的id，而是其中的参与人数
+    bookings: [{ type: Number, ref: 'Booking' }],
     __v: {
       type: Number,
       select: false,
@@ -37,7 +38,11 @@ schema.virtual('state').get(function getStateType() {
     { threshold: 80, type: 'limited' },
     { threshold: 0, type: 'available' },
   ];
-  const percentage = (this.bookings.length / this.maxNumber) * 100;
+  // 用关联bookings表中参与人数的总和来当分子，而不是bookings数组的个数
+  const attendance = this.bookings.length !== 0
+    ? this.bookings.reduce((pre, cur) => pre + cur)
+    : 0;
+  const percentage = (attendance / this.maxNumber) * 100;
   for (let i = 0; i < stateTypeTable.length; i += 1) {
     if (percentage >= stateTypeTable[i].threshold) {
       return stateTypeTable[i].type;

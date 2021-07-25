@@ -1,20 +1,20 @@
-const User = require('../models/user');
+const Booking = require('../models/booking');
 const { generateToken } = require('../utils/jwt');
-const { INVALID_USER, INVALID_PASSWORD } = require('../constants/errorMessage');
+const { INVALID_EMAIL, INVALID_PASSWORD } = require('../constants/errorMessage');
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  const existingUser = await User.findOne({ email }).exec();
-  if (!existingUser) {
-    return res.status(400).send(INVALID_USER);
+  const existingBooking = await Booking.findOne({ email }).exec();
+  if (!existingBooking) {
+    return res.status(400).send(INVALID_EMAIL);
   }
 
-  if (!(await existingUser.validatePassword(password.toString()))) {
+  if (!(await existingBooking.validatePassword(password.toString()))) {
     return res.status(400).send(INVALID_PASSWORD);
   }
 
-  const token = generateToken(existingUser._id, existingUser.userType);
+  const token = generateToken(existingBooking._id, existingBooking.bookingNum);
   return res.json({ token });
 };
 
