@@ -47,18 +47,16 @@
                     steps{
                         sshagent(credentials: ['sshec2']) {
                     sh '''
-                        
                         ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker ps
-                        ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker rm -f myweb
-                        
+                        ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker rm -f myweb                    
                         ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker pull garrydevops/test:"$BUILD_NUMBER"
                         ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker run --name myweb -p 3000:3000 -d --restart=always garrydevops/test:$BUILD_NUMBER
-                        
+                        ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker image prune -f -a
                         
                        '''
-                        }
-
                     }
-                } 
+
+                }
+        } 
     }
 }
