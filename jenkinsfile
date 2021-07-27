@@ -11,6 +11,8 @@
 
         agent any
         stages {
+            stage(''){
+            }
                 // stage('Cloning  BitBucket') {
                 //     steps {
                 //     git 'git@github.com:naistangz/Docker_Jenkins_Pipeline.git'
