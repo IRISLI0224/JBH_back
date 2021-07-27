@@ -20,6 +20,7 @@
                 // }
 
                 stage('Building Docker Image'){
+                    configFileProvider([configFile(fileId: 'fe963688-4be3-4ea8-9212-d7bdafc2c195', targetLocation: '/var/jenkins_home/workspace/project3-backend/')])
                     steps {
                         sh 'pwd'
                         sh 'ls'
@@ -49,11 +50,12 @@
                     steps{
                         sshagent(credentials: ['sshec2']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker ps
+                
                         ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker rm -f myweb                    
                         ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker pull garrydevops/test:"$BUILD_NUMBER"
                         ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker run --name myweb -p 3000:3000 -d --restart=always garrydevops/test:$BUILD_NUMBER
                         ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker image prune -f -a
+                        ssh -o StrictHostKeyChecking=no -l ec2-user 3.25.70.196 docker ps
                         
                        '''
                     }
