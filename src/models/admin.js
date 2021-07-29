@@ -8,11 +8,11 @@ const schema = new Schema({
   userType: {
     type: String,
     default: 'admin',
-},
+  },
   __v: { type: Number, select: true },
 });
 
-schema.methods.hashPassword = async function() {
+schema.methods.hashPassword = async function () {
   this.password = await bcrypt.hash(this.password, 10);
   console.log(this.password);
 };

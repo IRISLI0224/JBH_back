@@ -15,7 +15,7 @@ const AdminLogin = async (req, res) => {
   }
 
   const token = generateToken(existingAdmin._id, existingAdmin.email);
-  return res.json({ email,token });
+  return res.json({ email, token });
 };
 
 module.exports = { AdminLogin };

@@ -14,22 +14,22 @@ const addAdmin = async (req, res) => {
     email,
     userType,
     password,
-} = req.body;
+  } = req.body;
 
-const existingAdmin = await Admin.findOne({ email });
-if (existingAdmin) {
+  const existingAdmin = await Admin.findOne({ email });
+  if (existingAdmin) {
     return res.status(400).json('Admin already exist');
-}
+  }
 
-const admin = new Admin({
-  email,
-  userType,
-  password,
-});
-await admin.hashPassword();
-await admin.save();
-const token = generateToken(admin._id, admin.userType);
-return res.json({ email, token });
+  const admin = new Admin({
+    email,
+    userType,
+    password,
+  });
+  await admin.hashPassword();
+  await admin.save();
+  const token = generateToken(admin._id, admin.userType);
+  return res.json({ email, token });
 };
 
-module.exports = { getAdminByEmail,addAdmin };
+module.exports = { getAdminByEmail, addAdmin };
