@@ -5,11 +5,16 @@ const bcrypt = require('bcrypt');
 const schema = new Schema({
   email: { type: String },
   password: { type: String },
-  __v: { type: Number, select: false },
+  userType: {
+    type: String,
+    default: 'admin',
+},
+  __v: { type: Number, select: true },
 });
 
-schema.methods.hashPassword = async function () {
-  this.password = await bcrypt.hash('aaaaaa', 10);
+schema.methods.hashPassword = async function() {
+  this.password = await bcrypt.hash(this.password, 10);
+  console.log(this.password);
 };
 
 schema.methods.validatePassword = async function (password) {
