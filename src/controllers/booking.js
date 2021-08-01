@@ -45,6 +45,31 @@ const getAllBookings = async (req, res) => {
   return res.json(bookings);
 };
 
+const getBookingsByMonth = async (req, res) => {
+  const { year, month } = req.params;
+  const reg = new RegExp(`^${year}-${month}`);
+  const requestingSessions = await Session.find({
+    date: { $regex: reg },
+  }).exec();
+
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const bookingsExistenceArr = [];
+  for (let i = 0; i < daysInMonth; i += 1) {
+    bookingsExistenceArr.push(false);
+    for (let j = 0; j < requestingSessions.length; j += 1) {
+      const requestingDay = parseInt(
+        requestingSessions[j].date.split('-')[2],
+        10,
+      );
+      if (requestingDay === i + 1 && requestingSessions[j].bookings.length > 0) {
+        bookingsExistenceArr[i] = true;
+        break;
+      }
+    }
+  }
+  return res.json({ date: `${year}-${month}`, bookingsExistenceArr });
+};
+
 // 根据phone、email、bookingNum、bookingDate、_id查询bookings数组，
 // 电话、邮箱、bookingDate查询的数组可多个元素值（client和admin登录后均有权限）
 const getBookingsByArgs = (args) => async (req, res) => {
@@ -95,6 +120,7 @@ const deleteBookingById = async (req, res) => {
 module.exports = {
   addBooking,
   getAllBookings,
+  getBookingsByMonth,
   getBookingsByPhone,
   getBookingsByEmail,
   getBookingByBookingNum,

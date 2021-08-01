@@ -9,6 +9,7 @@ const router = express.Router();
 const {
   addBooking,
   getAllBookings,
+  getBookingsByMonth,
   getBookingsByPhone,
   getBookingsByEmail,
   getBookingByBookingNum,
@@ -21,6 +22,7 @@ const {
 
 router.post('', bookingValidator, addBooking);
 router.get('/all', authGuard, getAllBookings);
+router.get('/monthly/:year/:month', getBookingsByMonth);
 router.get('/phone/:phone', authGuard, getBookingsByPhone);
 router.get('/email/:email', authGuard, getBookingsByEmail);
 router.get('/bookingnum/:bookingNum', authGuard, getBookingByBookingNum);
