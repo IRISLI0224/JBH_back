@@ -15,7 +15,6 @@ pipeline {
        
         stage('Building Docker Image') {
             steps {configFileProvider([configFile(fileId: 'fe963688-4be3-4ea8-9212-d7bdafc2c195', targetLocation: '/var/jenkins_home/workspace/project3-backend/')]){
-                    sh 'pwd'
                     sh 'ls'
                     script {
                         dockerImage = docker.build registry + ":$BUILD_NUMBER"
