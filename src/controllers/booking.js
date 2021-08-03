@@ -1,5 +1,6 @@
 const Booking = require('../models/booking');
 const Session = require('../models/session');
+const { createPayment } = require('./payment');
 const { genBookingNum } = require('../utils/gen');
 
 // 添加booking并生成用户密码
@@ -15,6 +16,25 @@ const addBooking = async (req, res) => {
     dateOfBirth,
     paidAmount,
   } = req.validatedBooking;
+  // send payment request before addbooking
+  const { id } = req.body;
+  const paymentRes = {
+    success: {
+      message: 'Payment Successful',
+      success: true,
+    },
+    fail: {
+      message: 'Payment Failed',
+      success: false,
+    },
+  };
+  try {
+    const response = await createPayment(paidAmount * 100, id, email);
+  } catch (error) {
+    // stop addbooking request if the payment is failed.
+    return res.json(paymentRes.fail);
+  }
+  // add booking if the payment is successful.
   const bookingNum = genBookingNum();
   const booking = new Booking({
     firstName,
@@ -36,7 +56,9 @@ const addBooking = async (req, res) => {
     await session.save();
   }
   await booking.save();
-  return res.status(201).json(booking);
+  // merge booking info and payment successful messages.
+  const bookingAndPaymentRes = { ...booking._doc, ...paymentRes.success };
+  return res.status(201).json(bookingAndPaymentRes);
 };
 
 // 查询全部bookings（仅admin登录后有权限）
@@ -61,7 +83,10 @@ const getBookingsByMonth = async (req, res) => {
         requestingSessions[j].date.split('-')[2],
         10,
       );
-      if (requestingDay === i + 1 && requestingSessions[j].bookings.length > 0) {
+      if (
+        requestingDay === i + 1
+        && requestingSessions[j].bookings.length > 0
+      ) {
         bookingsExistenceArr[i] = true;
         break;
       }
