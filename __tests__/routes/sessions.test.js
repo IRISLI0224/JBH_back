@@ -1,13 +1,17 @@
 const supertest = require('supertest');
 const app = require('../../src/app');
 const Session = require('../../src/models/session');
-const { connectToDB } = require('../../src/utils/db');
+const { connectToDB, disconnectDB } = require('../../src/utils/db');
 
 const request = supertest(app);
 
 describe('/sessions', () => {
   beforeAll(() => {
     connectToDB();
+  });
+
+  afterAll(async () => {
+    await disconnectDB();
   });
 
   beforeEach(async () => {
