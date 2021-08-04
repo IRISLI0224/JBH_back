@@ -10,11 +10,10 @@ exports.connectToDB = () => {
     database += '_test';
   }
   if (DB_NAME && DB_PASSWORD) {
-    connectionString = `mongodb+srv://${DB_NAME}:${DB_PASSWORD}@${DB_HOST}/${DB_DATABASE}`;
+    connectionString = `mongodb+srv://${DB_NAME}:${DB_PASSWORD}@${DB_HOST}/${database}`;
     console.log(connectionString);
   } else {
-    connectionString = `mongodb://${DB_HOST}:${DB_PORT}/${DB_DATABASE}`;
-    console.log(connectionString);
+    connectionString = `mongodb://${DB_HOST}:${DB_PORT}/${database}`;
     console.log(connectionString);
   }
 

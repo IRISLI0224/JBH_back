@@ -32,7 +32,7 @@ const addBooking = async (req, res) => {
     const response = await createPayment(paidAmount * 100, id, email);
   } catch (error) {
     // stop addbooking request if the payment is failed.
-    return res.json(paymentRes.fail);
+    return res.status(error.statusCode).json(error.message);
   }
   // add booking if the payment is successful.
   const bookingNum = genBookingNum();
