@@ -25,10 +25,7 @@ function buildStateArr(daysInMonth, SessionArr) {
   for (let i = 0; i < daysInMonth; i += 1) {
     stateArr.push("closed");
     for (let j = 0; j < SessionArr.length; j += 1) {
-      const requestingDay = parseInt(
-        SessionArr[j].date.split("-")[2],
-        10
-      );
+      const requestingDay = parseInt(SessionArr[j].date.split("-")[2], 10);
       if (requestingDay === i + 1) {
         stateArr[i] = SessionArr[j].state;
         break;
@@ -37,6 +34,83 @@ function buildStateArr(daysInMonth, SessionArr) {
   }
   return stateArr;
 }
+
+/**
+ * @swagger
+ * /api/sessions:
+ *   post:
+ *    summary: Create a new session
+ *    tags: [Sessions]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - date
+ *              - time
+ *              - maxNumber
+ *            properties:
+ *              date:
+ *                type: string
+ *                description: the date of the session
+ *              time:
+ *                type: integer
+ *                description: the time of the session
+ *              maxNumber:
+ *                type: integer
+ *                description: the max number of people that is to be served
+ *            example:
+ *              date: 2021-08-21
+ *              time: 0
+ *              maxNumber: 30
+ *    responses:
+ *      201:
+ *        description: The session successfully added
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                _id:
+ *                  type: string
+ *                  description: auto generated unique identifier
+ *                date:
+ *                  type: string
+ *                  description: the date of the session
+ *                time:
+ *                  type: integer
+ *                  description: the time of the session
+ *                maxNumber:
+ *                  type: integer
+ *                  description: the max number of people that is to be served
+ *                bookings:
+ *                  type: array
+ *                  description: the existing number of clients booked for the session
+ *                  items:
+ *                    type: integer
+ *                state:
+ *                  type: string
+ *                  description: the availability of the session
+ *                createdAt:
+ *                  type: string
+ *                  description: the time when session was created
+ *                updatedAt:
+ *                  type: string
+ *                  description: the time when session was updated
+ *              example:
+ *                time: 0
+ *                bookings: []
+ *                _id: 611f18d75a316237bc318d8a
+ *                date: 2021-08-20
+ *                maxNumber: 30
+ *                createdAt: 2021-08-20T02:52:07.492Z
+ *                updatedAt: 2021-08-20T02:52:07.492Z
+ *                state: available
+ *      409:
+ *        description: Session already existed
+ */
 
 //= =================== ADD SESSION ====================
 async function addSession(req, res) {
@@ -66,6 +140,53 @@ async function addSession(req, res) {
   return res.status(201).json(session);
 }
 
+/**
+ * @swagger
+ * /api/sessions/single/{date}/{time}:
+ *   get:
+ *    summary: Get a session by date and time
+ *    tags: [Sessions]
+ *    parameters:
+ *      - name: date
+ *        in: path
+ *        description: the date of session
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: time
+ *        in: path
+ *        description: the time of session
+ *        schema:
+ *          type: integar
+ *    responses:
+ *      200:
+ *        description: The session by date and time
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                date:
+ *                  type: string
+ *                  description: the date of the session
+ *                time:
+ *                  type: integer
+ *                  description: the time of the session
+ *                maxNumber:
+ *                  type: integer
+ *                  description: the max number of people that is to be served
+ *                state:
+ *                  type: string
+ *                  description: the availability of the session
+ *              example:
+ *                date: 2021-08-20
+ *                time: 0
+ *                maxNumber: 30
+ *                state: available
+ *      404:
+ *        description: Session is not found
+ */
+
 //= =================== GET SESSION ====================
 async function getSession(req, res) {
   // validate session data
@@ -87,6 +208,77 @@ async function getSession(req, res) {
 
   return res.json(getFormattedSession(session));
 }
+
+/**
+ * @swagger
+ * /api/sessions/group/{year}/{month}:
+ *   get:
+ *    summary: Get sessions by month
+ *    tags: [Sessions]
+ *    parameters:
+ *      - name: year
+ *        in: path
+ *        description: the year of session
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: month
+ *        in: path
+ *        description: the month of session
+ *        schema:
+ *          type: string
+ *    responses:
+ *      200:
+ *        description: The sessions by month
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                date:
+ *                  type: string
+ *                  description: the date of the session
+ *                stateArr:
+ *                  type: array
+ *                  description: the session states for the selected month
+ *                  items:
+ *                    type: string
+ *              example:
+ *                date: 2021-08
+ *                stateArr: [
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  available,
+ *                  closed,
+ *                  available,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  limited,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  fullyBooked,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                  closed,
+ *                ]
+ */
 
 //= =================== GET SESSION BY MONTH ====================
 async function getSessionByMonth(req, res) {
@@ -113,9 +305,48 @@ async function getSessionByMonth(req, res) {
 
   const daysInMonth = new Date(year, month, 0).getDate();
   const stateArr = buildStateArr(daysInMonth, formattedSessionArr);
-  
+
   return res.json({ date: `${year}-${formattedMonth}`, stateArr });
 }
+
+/**
+ * @swagger
+ * /api/sessions/{date}/{time}:
+ *   put:
+ *    summary: Updata a session by date and time
+ *    tags: [Sessions]
+ *    parameters:
+ *      - name: date
+ *        in: path
+ *        description: the date of session
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: time
+ *        in: path
+ *        description: the time of session
+ *        schema:
+ *          type: integar
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - maxNumber
+ *            properties:
+ *              maxNumber:
+ *                type: integer
+ *                description: the max number of people that is to be served
+ *            example:
+ *              maxNumber: 30
+ *    responses:
+ *      200:
+ *        description: Update successful
+ *      404:
+ *        description: Session is not found
+ */
 
 //= =================== UPDATE SESSION ====================
 async function updateSession(req, res) {
@@ -152,6 +383,31 @@ async function updateSession(req, res) {
 
   return res.send("Update successful");
 }
+
+/**
+ * @swagger
+ * /api/sessions/{date}/{time}:
+ *   delete:
+ *    summary: Delete a session by date and time
+ *    tags: [Sessions]
+ *    parameters:
+ *      - name: date
+ *        in: path
+ *        description: the date of session
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - name: time
+ *        in: path
+ *        description: the time of session
+ *        schema:
+ *          type: integar
+ *    responses:
+ *      204:
+ *        description: Delete successful
+ *      404:
+ *        description: Session is not found
+ */
 
 //= =================== DELETE SESSION ====================
 async function deleteSession(req, res) {
