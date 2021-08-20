@@ -29,6 +29,7 @@ const schema = new Schema(
       virtuals: true,
     },
     id: false,
+    versionKey: false,
   },
 );
 
