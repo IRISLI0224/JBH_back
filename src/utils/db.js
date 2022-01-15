@@ -14,7 +14,7 @@ exports.connectToDB = () => {
     connectionString = 'mongodb+srv://node:NgwVBhIFpZBRu28t@cluster0.bxc2i.mongodb.net/JBH?retryWrites=true&w=majority';
     console.log(connectionString);
   } else {
-    connectionString = `mongodb://${DB_HOST}:${DB_PORT}/${database}`;
+    connectionString = `mongodb+srv://node:NgwVBhIFpZBRu28t@cluster0.bxc2i.mongodb.net/JBH?retryWrites=true&w=majority`;
     console.log(connectionString);
   }
 
