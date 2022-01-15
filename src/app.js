@@ -18,8 +18,8 @@ const corsOptions = {
 };
 
 app.use(morgan(process.env.NODE_DEV === 'production' ? 'common' : 'dev'));
-app.use(express.json());
 app.use(cors(corsOptions));
+app.use(express.json());
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc));
 app.use('/api', router);
 app.use(errorHandler);
