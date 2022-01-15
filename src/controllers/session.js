@@ -1,12 +1,14 @@
-const Joi = require("joi");
-const Session = require("../models/session");
+const Joi = require('joi');
+const Session = require('../models/session');
 
 //= =================== HELPER FUNCTION ====================
 function findSession(referenceInfo) {
   return Session.findOne(referenceInfo).exec();
 }
 
-function getFormattedSession({ date, time, maxNumber, state }) {
+function getFormattedSession({
+  date, time, maxNumber, state,
+}) {
   return {
     date,
     time,
@@ -23,9 +25,9 @@ function getFormattedMonth(month) {
 function buildStateArr(daysInMonth, SessionArr) {
   const stateArr = [];
   for (let i = 0; i < daysInMonth; i += 1) {
-    stateArr.push("closed");
+    stateArr.push('closed');
     for (let j = 0; j < SessionArr.length; j += 1) {
-      const requestingDay = parseInt(SessionArr[j].date.split("-")[2], 10);
+      const requestingDay = parseInt(SessionArr[j].date.split('-')[2], 10);
       if (requestingDay === i + 1) {
         stateArr[i] = SessionArr[j].state;
         break;
@@ -130,7 +132,7 @@ async function addSession(req, res) {
   // check whether session exist
   const existSession = await findSession({ date, time });
   if (existSession) {
-    return res.status(409).send("Session already existed");
+    return res.status(409).send('Session already existed');
   }
 
   // create new session
@@ -203,7 +205,7 @@ async function getSession(req, res) {
   // check whether session exist
   const session = await findSession({ date, time });
   if (!session) {
-    return res.status(404).send("Session is not found");
+    return res.status(404).send('Session is not found');
   }
 
   return res.json(getFormattedSession(session));
@@ -299,9 +301,7 @@ async function getSessionByMonth(req, res) {
   const requestingSessions = await Session.find({
     date: { $regex: reg },
   }).exec();
-  const formattedSessionArr = requestingSessions.map((session) =>
-    getFormattedSession(session)
-  );
+  const formattedSessionArr = requestingSessions.map((session) => getFormattedSession(session));
 
   const daysInMonth = new Date(year, month, 0).getDate();
   const stateArr = buildStateArr(daysInMonth, formattedSessionArr);
@@ -373,15 +373,15 @@ async function updateSession(req, res) {
   const session = await Session.findOneAndUpdate(
     { date, time },
     { $set: { maxNumber } },
-    { new: true }
+    { new: true },
   );
 
   // check whether session exist
   if (!session) {
-    return res.status(404).send("Session is not found");
+    return res.status(404).send('Session is not found');
   }
 
-  return res.send("Update successful");
+  return res.send('Update successful');
 }
 
 /**
@@ -427,7 +427,7 @@ async function deleteSession(req, res) {
 
   // check whether the session exist
   if (!session) {
-    return res.status(404).send("Session is not found");
+    return res.status(404).send('Session is not found');
   }
 
   return res.sendStatus(204);
