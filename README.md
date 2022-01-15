@@ -3,6 +3,8 @@ Demo Link on S3:http://jbh-front-test.s3-website-ap-southeast-2.amazonaws.com/
 
 
 BackendAPI: https://fathomless-stream-47517.herokuapp.com/api/
+
+Database: MongoDB atlas
 # README #
 
 This README would normally document whatever steps are necessary to get your application up and running.
